@@ -1,7 +1,5 @@
 (function(){
 
-  var styles = []
-
   function girlify(){
     var sheetList = Array.prototype.filter.call(document.styleSheets, function(s){
       return s.href && s.href.match(/github/);
@@ -54,14 +52,14 @@
     ];
     var replacement3 = 'rgba(255, 219, 225, 0.33)';
 
+    var styles = [];
     var rules, line, result;
 
-    for(s in sheetList){
-      if( sheetList.hasOwnProperty(s) && s!='length' && s!='item' && sheetList[s]['href']
-        && (sheetList[s]['href'].match(document.domain) || sheetList[s]['href'].match(document.domain.split('.')[0]) || sheetList[s]['href'].match(document.domain.split('.')[1]))) {
+    for(var s in sheetList){
+      if(sheetList.hasOwnProperty(s)) {
         rules = sheetList[s]['cssRules'];
 
-        for(rule in rules){
+        for(var rule in rules){
           if(rules[rule]['cssText']) {
 
             line = rules[rule]['cssText'];
@@ -85,6 +83,7 @@
         }
       }
     }
+    return styles;
   }
 
   function appendStyle(styles) {
@@ -97,5 +96,9 @@
     document.getElementsByTagName("head")[0].appendChild(css);
   }
 
-  window.onload = function() { girlify(); appendStyle(styles); };
+  window.onload = function() {
+    var styles = girlify();
+    appendStyle(styles);
+  };
+
 }());
