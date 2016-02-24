@@ -3,7 +3,9 @@
   var styles = []
 
   function girlify(){
-    var sheetList = document.styleSheets;
+    var sheetList = Array.prototype.filter.call(document.styleSheets, function(s){
+      return s.href && s.href.match(/github/);
+    });
 
     var pattern1 = [
       /rgb\(64, 120, 192\)/g,
