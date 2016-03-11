@@ -1,10 +1,6 @@
 (function(){
 
-  function girlify(){
-    var sheetList = Array.prototype.filter.call(document.styleSheets, function(s){
-      return s.href && s.href.match(/github/);
-    });
-
+  function getColorPalette(){
     var pattern1 = [
       /rgb\(64, 120, 192\)/g,
       /#4078c0/g,
@@ -15,7 +11,6 @@
       /rgb\(81, 167, 232\)/g,
       /rgba\(81, 167, 232, 0\.5\)/g
     ];
-    var replacement1 = '#EE4266';
 
     var pattern2 = [
       /#e6f1f6/g,
@@ -45,38 +40,35 @@
       /rgb\(242, 249, 252\)/g,
       /rgba\(209, 227, 237, 0.498039\)/g
     ];
-    var replacement2 = '#FFDBE1';
 
     var pattern3 = [
       /rgb\(245, 249, 252\)/g
     ];
-    var replacement3 = 'rgba(255, 219, 225, 0.33)';
 
+    return [
+      { patterns: pattern1, replacement: '#ee4266' },
+      { patterns: pattern2, replacement: '#ffdbe1' },
+      { patterns: pattern3, replacement: 'rgba(255, 219, 225, 0.33)' }
+    ];
+  }
+
+  function girlify(palette){
     var styles = [];
-    var rules, line, result;
+    var rules, result;
+    var sheetList = getDomainStyleSheets(/github/);
+
+    var paletteLength = palette.length;
 
     for(var s in sheetList){
       if(sheetList.hasOwnProperty(s)) {
-        rules = sheetList[s]['cssRules'];
+        rules = sheetList[s].cssRules;
 
         for(var rule in rules){
-          if(rules[rule]['cssText']) {
+          if(rules[rule].cssText) {
+            result = rules[rule].cssText;
 
-            line = rules[rule]['cssText'];
-
-            result = line;
-
-            for(var i=0; i<pattern1.length; i++)
-              if(line.match(pattern1[i]))
-                result = result.replace(pattern1[i], replacement1);
-
-            for(i=0; i<pattern2.length; i++)
-              if(line.match(pattern2[i]))
-                result = result.replace(pattern2[i], replacement2);
-
-            for(i=0; i<pattern3.length; i++)
-              if(line.match(pattern3[i]))
-                result = result.replace(pattern3[i], replacement3);
+            for(var i = 0; i < paletteLength; i++)
+              result = replaceColors(result, palette[i].patterns, palette[i].replacement);
 
             styles.push(result);
           }
@@ -86,18 +78,34 @@
     return styles;
   }
 
-  function appendStyle(styles) {
-    var css = document.createElement('style');
-    css.type = 'text/css';
+  function replaceColors(text, patternsList, replacement){
+    var result = text;
+    var size = patternsList.length;
 
-    if (css.styleSheet) css.styleSheet.cssText = styles.join(' ');
-    else css.appendChild(document.createTextNode(styles.join(' ')));
-
-    document.getElementsByTagName("head")[0].appendChild(css);
+    for(var i = 0; i < size; i++){
+      if(result.match(patternsList[i]))
+        result = result.replace(patternsList[i], replacement);
+    }
+    return result;
   }
 
-  window.onload = function() {
-    var styles = girlify();
+  function getDomainStyleSheets(regexp){
+    return Array.prototype.filter.call(document.styleSheets,
+      function(s){ return s.href && s.href.match(regexp); }
+    );
+  }
+
+  function appendStyle(styles){
+    var css = document.createElement('style');
+    css.type = 'text/css';
+    css.appendChild(document.createTextNode(styles.join(' ')));
+
+    document.getElementsByTagName('head')[0].appendChild(css);
+  }
+
+  window.onload = function(){
+    var palette = getColorPalette();
+    var styles = girlify(palette);
     appendStyle(styles);
   };
 
