@@ -52,27 +52,22 @@
     ];
   }
 
-  function girlify(palette){
+  function girlify(palette, styleSheet){
     var styles = [];
     var rules, result;
-    var sheetList = getDomainStyleSheets(/github/);
 
     var paletteLength = palette.length;
 
-    for(var s in sheetList){
-      if(sheetList.hasOwnProperty(s)) {
-        rules = sheetList[s].cssRules;
+    rules = styleSheet.cssRules;
 
-        for(var rule in rules){
-          if(rules[rule].cssText) {
-            result = rules[rule].cssText;
+    for(var rule in rules){
+      if(rules[rule].cssText) {
+        result = rules[rule].cssText;
 
-            for(var i = 0; i < paletteLength; i++)
-              result = replaceColors(result, palette[i].patterns, palette[i].replacement);
+        for(var i = 0; i < paletteLength; i++)
+          result = replaceColors(result, palette[i].patterns, palette[i].replacement);
 
-            styles.push(result);
-          }
-        }
+        styles.push(result);
       }
     }
     return styles;
@@ -103,9 +98,18 @@
     document.getElementsByTagName('head')[0].appendChild(css);
   }
 
+
+  var palette = getColorPalette();
+
   window.onload = function(){
-    var palette = getColorPalette();
-    var styles = girlify(palette);
+    var styles = [];
+    var sheetList = getDomainStyleSheets(/github/);
+
+    for(var sheet in sheetList){
+      if(sheetList.hasOwnProperty(sheet)) {
+        styles = styles.concat(girlify(palette, sheetList[sheet]));
+      }
+    }
     appendStyle(styles);
   };
 
