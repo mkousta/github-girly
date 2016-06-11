@@ -1,0 +1,15 @@
+{
+  "name": "github-girly",
+  "version": "0.0.1",
+  "dependencies": {},
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mkousta/github-girly.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mkousta/github-girly/issues"
+  },
+  "homepage": "https://github.com/mkousta/github-girly#readme"
+}
