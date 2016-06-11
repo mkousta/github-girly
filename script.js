@@ -2,54 +2,50 @@
 
   function getColorPalette(){
     var pattern1 = [
-      /rgb\(64, 120, 192\)/g,
-      /#4078c0/g,
-      /#336479/g,
-      /rgb\(51, 100, 121\)/g,
-      /rgb\(34, 68, 102\)/g,
-      /#51a7e8/g,
-      /rgb\(81, 167, 232\)/g,
-      /rgba\(81, 167, 232, 0\.5\)/g
+      'rgb(64, 120, 192)',
+      'rgb(51, 100, 121)',
+      'rgb(34, 68, 102)',
+      'rgb(81, 167, 232)',
+      'rgba(81, 167, 232, 0.5)'
     ];
 
     var pattern2 = [
-      /#e6f1f6/g,
-      /rgb\(230, 241, 246\)/g,
-      /#e8f0f8/g,
-      /rgb\(232, 240, 248\)/g,
-      /#e8f1f6/g,
-      /rgb\(232, 241, 246\)/g,
-      /#7aa1d3/g,
-      /rgb\(122, 161, 211\)/g,
-      /#c1dce9/g,
-      /rgb\(193, 220, 233\)/g,
-      /#bac6d3/g,
-      /rgb\(186, 198, 211\)/g,
-      /#c5d5dd/g,
-      /rgb\(197, 213, 221\)/g,
-      /#d1e2eb/g,
-      /rgb\(209, 226, 235\)/g,
-      /#cedee5/g,
-      /rgb\(206, 222, 229\)/g,
-      /rgb\(83, 134, 198\)/g,
-      /rgb\(225, 234, 245\)/g,
-      /rgb\(128, 166, 205\)/g,
-      /#e2eef9/g,
-      /rgb\(226, 238, 249\)/g,
-      /rgb\(201, 230, 242\)/g,
-      /rgb\(242, 249, 252\)/g,
-      /rgba\(209, 227, 237, 0.498039\)/g
+      'rgb(230, 241, 246)',
+      'rgb(232, 240, 248)',
+      'rgb(232, 241, 246)',
+      'rgb(122, 161, 211)',
+      'rgb(193, 220, 233)',
+      'rgb(186, 198, 211)',
+      'rgb(197, 213, 221)',
+      'rgb(209, 226, 235)',
+      'rgb(206, 222, 229)',
+      'rgb(83, 134, 198)',
+      'rgb(225, 234, 245)',
+      'rgb(128, 166, 205)',
+      'rgb(226, 238, 249)',
+      'rgb(201, 230, 242)',
+      'rgb(242, 249, 252)',
+      'rgba(209, 227, 237, 0.498039)'
     ];
 
     var pattern3 = [
-      /rgb\(245, 249, 252\)/g
+      'rgb(245, 249, 252)'
     ];
 
     return [
-      { patterns: pattern1, replacement: '#ee4266' },
-      { patterns: pattern2, replacement: '#ffdbe1' },
-      { patterns: pattern3, replacement: 'rgba(255, 219, 225, 0.33)' }
+      { patterns: pattern1.map(convertToRegExp), replacement: '#ee4266' },
+      { patterns: pattern2.map(convertToRegExp), replacement: '#ffdbe1' },
+      { patterns: pattern3.map(convertToRegExp), replacement: 'rgba(255, 219, 225, 0.33)' }
     ];
+  }
+
+  function convertToRegExp(colorString) {
+    if(colorString[0]==='r'){
+      colorString = colorString.replace(/\(/, '\\(');
+      colorString = colorString.replace(/\)/, '\\)');
+      colorString = colorString.replace(/\./, '\\.');
+    }
+    return new RegExp(colorString, 'g');
   }
 
   function girlify(palette, styleSheet){
